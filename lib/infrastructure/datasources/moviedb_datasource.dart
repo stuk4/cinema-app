@@ -1,4 +1,5 @@
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart';
 import 'package:cinemapedia/config/constants/enviornment.dart';
@@ -55,6 +56,25 @@ class MovieDbDatasource extends MoviesDatasource {
       'page': page,
     });
 
+    return _jsonToMovies(response.data);
+  }
+
+  @override
+  Future<Movie> getMovieById(String movieId) async {
+    final response = await dio.get('/movie/$movieId');
+    if (response.statusCode != 200) throw Exception('Movie not found');
+    final movieDetails = MovieDetails.fromJson(response.data);
+    final Movie movie = MovieMapper.movieDetailsToEntity(movieDetails);
+    return movie;
+  }
+
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    if (query.isEmpty) return [];
+
+    final response = await dio.get('/search/movie', queryParameters: {
+      'query': query,
+    });
     return _jsonToMovies(response.data);
   }
 }
