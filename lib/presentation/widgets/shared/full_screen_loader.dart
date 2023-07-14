@@ -11,7 +11,7 @@ class FullScreenLoader extends StatelessWidget {
       'Llamando a mi novia',
       'Ahora si...',
     ];
-    return Stream.periodic(const Duration(milliseconds: 1200), (step) {
+    return Stream.periodic(const Duration(milliseconds: 500), (step) {
       return messages[step];
     }).take(messages.length);
   }
